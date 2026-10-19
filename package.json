@@ -1,0 +1,33 @@
+{
+  "name": "curriculo-api",
+  "version": "1.0.0",
+  "description": "API REST para gerenciamento de currículos com PostgreSQL e Express",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "init-db": "node src/scripts/init-db.js",
+    "seed": "node src/scripts/seed.js",
+    "check-db": "node src/scripts/check-db.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "express",
+    "postgresql",
+    "neon",
+    "curriculo",
+    "api-rest"
+  ],
+  "author": "João Victor de Oliveira Chaves",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^5.1.0",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
