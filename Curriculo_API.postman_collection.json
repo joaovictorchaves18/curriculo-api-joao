@@ -1,0 +1,672 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "name": "API REST Currículo - AOS UNICAP",
+    "description": "Coleção Postman para testar o CRUD completo das entidades (Pessoa, Experiência Acadêmica, Experiência Profissional, Projeto e Habilidade) e seus relacionamentos.\n\nConfigurada com variáveis de coleção (`baseUrl`, `pessoaId`, `experienciaAcademicaId`, `experienciaProfissionalId`, `projetoId`, `habilidadeId`).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://curriculo-api-joao.vercel.app",
+      "type": "string"
+    },
+    {
+      "key": "pessoaId",
+      "value": "05d157dc-1b34-4d0d-b516-3965b84945bc",
+      "type": "string"
+    },
+    {
+      "key": "pessoa2Id",
+      "value": "50acea6b-d8f5-4413-9ffb-0c38987b6829",
+      "type": "string"
+    },
+    {
+      "key": "experienciaAcademicaId",
+      "value": "b5081f31-4108-4aa1-9f1f-9f5db55ed8fb",
+      "type": "string"
+    },
+    {
+      "key": "experienciaProfissionalId",
+      "value": "f53885c6-1eda-4a9f-a917-82404d4dcb65",
+      "type": "string"
+    },
+    {
+      "key": "projetoId",
+      "value": "786018c6-8e7d-45ee-8abe-2c49b7e8353d",
+      "type": "string"
+    },
+    {
+      "key": "habilidadeId",
+      "value": "d40c503f-63d5-459f-be0e-7d29e2f18756",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health Check",
+      "item": [
+        {
+          "name": "Status do Servidor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Pessoas (Currículos)",
+      "item": [
+        {
+          "name": "Listar todas as Pessoas (com relacionamentos)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('pessoaId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Pessoa por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}"]
+            }
+          }
+        },
+        {
+          "name": "Criar nova Pessoa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('pessoaId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Carlos Eduardo Almeida\",\n  \"titulo\": \"Desenvolvedor Back-end Node.js\",\n  \"resumo\": \"Desenvolvedor focado em APIs RESTful escaláveis e bancos de dados relacionais.\",\n  \"email\": \"carlos.almeida@email.com\",\n  \"telefone\": \"(81) 97777-3333\",\n  \"linkedin\": \"https://linkedin.com/in/carloseduardo\",\n  \"github\": \"https://github.com/carloseduardo\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pessoas",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Pessoa por ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Desenvolvedor Full Stack Pleno\",\n  \"resumo\": \"Resumo atualizado via PUT no Postman.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Pessoa por ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Relacionamentos de Pessoa",
+      "item": [
+        {
+          "name": "Listar Experiências Acadêmicas da Pessoa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}/experiencias-academicas",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}", "experiencias-academicas"]
+            }
+          }
+        },
+        {
+          "name": "Listar Experiências Profissionais da Pessoa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}/experiencias-profissionais",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}", "experiencias-profissionais"]
+            }
+          }
+        },
+        {
+          "name": "Listar Projetos da Pessoa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}/projetos",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}", "projetos"]
+            }
+          }
+        },
+        {
+          "name": "Listar Habilidades da Pessoa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pessoas/{{pessoaId}}/habilidades",
+              "host": ["{{baseUrl}}"],
+              "path": ["pessoas", "{{pessoaId}}", "habilidades"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Experiências Acadêmicas",
+      "item": [
+        {
+          "name": "Listar todas as Experiências Acadêmicas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('experienciaAcademicaId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-academicas",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-academicas"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Experiência Acadêmica por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-academicas/{{experienciaAcademicaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-academicas", "{{experienciaAcademicaId}}"]
+            }
+          }
+        },
+        {
+          "name": "Criar Experiência Acadêmica (vinculada a pessoaId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('experienciaAcademicaId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instituicao\": \"UNICAP\",\n  \"curso\": \"Pós-Graduação em Engenharia de Software\",\n  \"grau\": \"Especialização\",\n  \"dataInicio\": \"2026-03\",\n  \"dataFim\": \"2027-08\",\n  \"descricao\": \"Especialização em arquitetura de sistemas distribuídos.\",\n  \"pessoaId\": \"{{pessoaId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-academicas",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-academicas"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Experiência Acadêmica por ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"curso\": \"Pós-Graduação em Arquitetura de Software e Cloud\",\n  \"descricao\": \"Descrição atualizada pelo Postman.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-academicas/{{experienciaAcademicaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-academicas", "{{experienciaAcademicaId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Experiência Acadêmica por ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-academicas/{{experienciaAcademicaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-academicas", "{{experienciaAcademicaId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Experiências Profissionais",
+      "item": [
+        {
+          "name": "Listar todas as Experiências Profissionais",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('experienciaProfissionalId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-profissionais",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-profissionais"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Experiência Profissional por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-profissionais/{{experienciaProfissionalId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-profissionais", "{{experienciaProfissionalId}}"]
+            }
+          }
+        },
+        {
+          "name": "Criar Experiência Profissional (vinculada a pessoaId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('experienciaProfissionalId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"empresa\": \"CESAR\",\n  \"cargo\": \"Engenheiro de Software Júnior\",\n  \"dataInicio\": \"2026-01\",\n  \"dataFim\": \"Atual\",\n  \"descricao\": \"Atuação no desenvolvimento de APIs em Node.js e integração com bancos relacionais.\",\n  \"pessoaId\": \"{{pessoaId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-profissionais",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-profissionais"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Experiência Profissional por ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cargo\": \"Engenheiro de Software Pleno\",\n  \"descricao\": \"Promoção de cargo atualizada via PUT.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-profissionais/{{experienciaProfissionalId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-profissionais", "{{experienciaProfissionalId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Experiência Profissional por ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/experiencias-profissionais/{{experienciaProfissionalId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["experiencias-profissionais", "{{experienciaProfissionalId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Projetos",
+      "item": [
+        {
+          "name": "Listar todos os Projetos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('projetoId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projetos",
+              "host": ["{{baseUrl}}"],
+              "path": ["projetos"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Projeto por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projetos/{{projetoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["projetos", "{{projetoId}}"]
+            }
+          }
+        },
+        {
+          "name": "Criar Projeto (vinculado a pessoaId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('projetoId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"E-commerce Serverless\",\n  \"descricao\": \"Plataforma de vendas online com checkout integrado.\",\n  \"tecnologias\": \"Node.js, Express, PostgreSQL, NeonDB, Vercel\",\n  \"urlRepositorio\": \"https://github.com/joaochaves/ecommerce-api\",\n  \"urlDeploy\": \"https://ecommerce-api.vercel.app\",\n  \"pessoaId\": \"{{pessoaId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projetos",
+              "host": ["{{baseUrl}}"],
+              "path": ["projetos"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Projeto por ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"E-commerce Serverless v2.0\",\n  \"tecnologias\": \"Node.js, Express, Sequelize, PostgreSQL, Redis\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/projetos/{{projetoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["projetos", "{{projetoId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Projeto por ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/projetos/{{projetoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["projetos", "{{projetoId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Habilidades",
+      "item": [
+        {
+          "name": "Listar todas as Habilidades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('habilidadeId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/habilidades",
+              "host": ["{{baseUrl}}"],
+              "path": ["habilidades"]
+            }
+          }
+        },
+        {
+          "name": "Buscar Habilidade por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/habilidades/{{habilidadeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["habilidades", "{{habilidadeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Criar Habilidade (vinculada a pessoaId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('habilidadeId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Docker & Containers\",\n  \"nivel\": \"Intermediário\",\n  \"categoria\": \"DevOps\",\n  \"pessoaId\": \"{{pessoaId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/habilidades",
+              "host": ["{{baseUrl}}"],
+              "path": ["habilidades"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Habilidade por ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nivel\": \"Avançado\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/habilidades/{{habilidadeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["habilidades", "{{habilidadeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Habilidade por ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/habilidades/{{habilidadeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["habilidades", "{{habilidadeId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
